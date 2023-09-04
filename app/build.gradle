@@ -4,6 +4,9 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 
 android {
     namespace 'com.shino72.location'
@@ -17,12 +20,22 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64','arm64-v8a', 'armeabi-v7a', 'armeabi'
+            universalApk false
         }
     }
     compileOptions {
@@ -41,6 +54,13 @@ android {
 }
 
 dependencies {
+    // Map View
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/libDaumMapAndroid.jar')
+
+    // retrofit
+
+
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1"
     // tedPermission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
@@ -62,6 +82,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation files('src/main/jniLibs')
     kapt "com.google.dagger:hilt-compiler:2.44"
 
     implementation 'androidx.core:core-ktx:1.7.0'

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/list"
+        android:title="목록"
+        android:icon="@drawable/icon_list"/>
+    <item
+        android:id="@+id/calendar"
+        android:title="달력"
+        android:icon="@drawable/icon_calendar"/>
+</menu>

@@ -18,8 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
-
-
 @Singleton
 class LocationRepository @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient

@@ -6,30 +6,36 @@
     <data>
 
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="위치 얻기"
+        <FrameLayout
+            android:id="@+id/fl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/progress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
-        <TextView
-            android:id="@+id/text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progress"
+            android:layout_height="match_parent"/>
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:layout_gravity="bottom"
+            android:id="@+id/bottomBar"
+            android:background="@color/white"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomNav"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_menu"
+                android:background="@color/transparent"/>
+        </com.google.android.material.bottomappbar.BottomAppBar>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:src="@drawable/icon_add"
+            app:layout_anchor="@id/bottomBar"
+            android:backgroundTint="@color/white"
+            app:maxImageSize="40dp"
+            app:tint="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
