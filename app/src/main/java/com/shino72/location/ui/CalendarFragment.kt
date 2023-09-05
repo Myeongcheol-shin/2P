@@ -18,10 +18,6 @@ class CalendarFragment : Fragment() {
     ): View? {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
-        val mapView = MapView(activity)
-        val mapViewContainer = binding.mapView as ViewGroup
-
-        mapViewContainer.addView(mapView)
 
         return binding.root
 

@@ -5,6 +5,9 @@
         android:title="목록"
         android:icon="@drawable/icon_list"/>
     <item
+        android:title=""
+        />
+    <item
         android:id="@+id/calendar"
         android:title="달력"
         android:icon="@drawable/icon_calendar"/>
