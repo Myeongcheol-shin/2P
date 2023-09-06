@@ -19,6 +19,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/createText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,14 +37,14 @@
         <ImageView
             android:layout_marginEnd="12dp"
             android:src="@drawable/close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginTop="8dp"
             android:id="@+id/cancelButton"/>
     </LinearLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -102,18 +103,78 @@
                     android:layout_height="match_parent">
                 </RelativeLayout>
             </RelativeLayout>
+            <TextView
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="20dp"
+                android:text="내용 입력"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <com.google.android.material.textfield.TextInputLayout
+                app:boxStrokeColor="@color/purple"
+                android:layout_margin="20dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/content_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="내용"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="20dp"
+                android:text="시간 설정"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_marginTop="10dp"
+                android:background="@drawable/icon_calendar2"
+                android:backgroundTint="@color/purple"
+                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
             <DatePicker
+                android:theme="@style/TimePicker"
+                android:id="@+id/date_picker"
                 android:layout_gravity="center"
                 android:datePickerMode="spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:calendarViewShown="false" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_marginTop="10dp"
+                android:background="@drawable/icon_time"
+                android:backgroundTint="@color/purple"
+                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
             <TimePicker
+                android:theme="@style/TimePicker"
+                android:id="@+id/time_picker"
                 android:layout_gravity="center"
                 android:timePickerMode="spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:calendarViewShown="false" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:text="일정 추가"
+                android:textStyle="bold"
+                android:layout_margin="20dp"
+                android:background="@drawable/close_background"
+                android:id="@+id/apply_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -14,7 +14,7 @@ import com.shino72.location.R
 import com.shino72.location.databinding.ActivitySearchBinding
 import com.shino72.location.service.data.kakao.Place
 import com.shino72.location.utils.Status
-import com.shino72.location.utils.data.Location
+import com.shino72.location.data.Location
 import com.shino72.location.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

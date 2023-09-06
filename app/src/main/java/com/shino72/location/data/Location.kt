@@ -1,4 +1,4 @@
-package com.shino72.location.utils.data
+package com.shino72.location.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

@@ -2,6 +2,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <RelativeLayout
+        android:background="@drawable/gradient_background"
         android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -20,4 +20,13 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
+    <style name="TimePicker" >
+        <!-- Text color -->
+        <item name="android:textColorPrimary">@color/purple</item>
+        <!-- Text Style-->
+        <item name="android:textStyle">bold</item>
+        <!-- Divider color -->
+        <item name="colorControlNormal">@color/transparent</item>
+    </style>
+
 </resources>
