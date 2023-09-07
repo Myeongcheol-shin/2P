@@ -27,6 +27,8 @@ constructor(
     private val _db =  MutableStateFlow<DBEvent>(DBEvent.LoadDB)
 
     val dbEvent : StateFlow<DBState> = _dbEvent
+
+
     fun getDB() {
         _dbEvent.value = DBState()
         planRepository.getAllPlans().onEach {
@@ -60,5 +62,8 @@ constructor(
         }
     }
 
+    init {
+        getDB()
+    }
 
 }

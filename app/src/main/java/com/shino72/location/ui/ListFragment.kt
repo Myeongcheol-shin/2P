@@ -1,5 +1,6 @@
 package com.shino72.location.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,7 +15,9 @@ import com.gun0912.tedpermission.normal.TedPermission
 import com.shino72.location.R
 import com.shino72.location.databinding.ActivityMainBinding
 import com.shino72.location.databinding.FragmentListBinding
+import com.shino72.location.viewmodel.ListViewModel
 import com.shino72.location.viewmodel.LocationViewModel
+import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,42 +27,46 @@ import kotlinx.coroutines.launch
 class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
-    private lateinit var locationViewModel : LocationViewModel
+    private lateinit var planViewModel: PlanViewModel
+    private lateinit var listViewModel: ListViewModel
 
     private val binding get() = _binding!!
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentListBinding.inflate(inflater, container, false)
         val view = binding.root
-        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        planViewModel = ViewModelProvider(this)[PlanViewModel::class.java]
+        listViewModel = ViewModelProvider(this)[ListViewModel::class.java]
 
-        binding.apply {
-            btn.setOnClickListener {
-                requestPermission {
-                    val scope = CoroutineScope(Dispatchers.IO)
-                    scope.launch {
-                        locationViewModel.getLocation()
-                    }
-                }
-            }
+
+        listViewModel.date.observe(requireActivity()) {
+            binding.date.text = "${it.year}년 ${it.month}월"
+            binding.date1Tv.text = it.daysOfWeek[0].second
+            binding.date2Tv.text = it.daysOfWeek[1].second
+            binding.date3Tv.text = it.daysOfWeek[2].second
+            binding.date4Tv.text = it.daysOfWeek[3].second
+            binding.date5Tv.text = it.daysOfWeek[4].second
+            binding.date6Tv.text = it.daysOfWeek[5].second
+            binding.date7Tv.text = it.daysOfWeek[6].second
         }
+
         lifecycle.coroutineScope.launchWhenCreated {
-            locationViewModel.location.collect {
+
+            planViewModel.dbEvent.collect {
                 if(it.isLoading) {
-                    binding.progress.visibility = View.VISIBLE
-                    binding.text.text = "Loading..."
+
                 }
                 if(it.error.isNotBlank()) {
-                    binding.progress.visibility = View.GONE
-                    binding.text.text = "${it.error}"
+
                 }
-                it.data?.let {
-                    binding.progress.visibility = View.GONE
-                    binding.text.text = "Success : latitude => ${it.latitude} / longitude ${it.longitude}"
+                it.db?.let {
+
                 }
             }
         }
@@ -73,17 +80,5 @@ class ListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun requestPermission(logic : () -> Unit) {
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    logic()
-                }
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(requireContext(), "권한을 허가해주세요", Toast.LENGTH_SHORT).show()
-                }
-            }).setDeniedMessage("위치 권한을 허용해주세요.").setPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION).check()
     }
 }
