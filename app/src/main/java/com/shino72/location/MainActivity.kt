@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                     y = contents!!.y!!,
                     contents = editText.text.toString(),
                     year = datePicker.year.toString(),
-                    month = datePicker.month.toString(),
+                    month = (datePicker.month + 1).toString(),
                     dayOfMonth = datePicker.dayOfMonth.toString(),
                     hour = timePicker.hour.toString(),
                     minute = timePicker.minute.toString(),

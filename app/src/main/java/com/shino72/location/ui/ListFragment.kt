@@ -7,19 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import com.shino72.location.R
 import com.shino72.location.databinding.FragmentListBinding
 import com.shino72.location.viewmodel.ListViewModel
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
-    private lateinit var planViewModel: PlanViewModel
+    private val planViewModel: PlanViewModel by activityViewModels()
     private val listViewModel : ListViewModel by viewModels()
     private val binding get() = _binding!!
 
@@ -36,9 +40,6 @@ class ListFragment : Fragment() {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
 
-        planViewModel = ViewModelProvider(this)[PlanViewModel::class.java]
-
-        replaceFragment(PlanFragment.newInstance("MON"))
 
         _innerList = mutableListOf(
             binding.innerLl1,
@@ -49,6 +50,14 @@ class ListFragment : Fragment() {
             binding.innerLl6,
             binding.innerLl7,
         )
+
+        val currentDate = Date()
+
+        // SimpleDateFormat을 사용하여 원하는 형식으로 포맷팅
+        val dateFormat = SimpleDateFormat("yyyy-M-d", Locale.getDefault())
+        val formattedDate = dateFormat.format(currentDate)
+
+
 
         listViewModel.date.observe(requireActivity()) {
             changeDateBg(it.today)
@@ -62,8 +71,7 @@ class ListFragment : Fragment() {
             binding.date7Tv.text = it.daysOfWeek[6].second
         }
 
-        // db 데이터 observing
-        /*
+
         lifecycle.coroutineScope.launchWhenCreated {
 
             planViewModel.dbEvent.collect {
@@ -74,11 +82,11 @@ class ListFragment : Fragment() {
 
                 }
                 it.db?.let {
-
+                    replaceFragment(PlanFragment.newInstance(formattedDate))
                 }
             }
         }
-         */
+
 
         // linearlayout onClickListener
         binding.apply {
@@ -107,7 +115,7 @@ class ListFragment : Fragment() {
 
     private fun changeInnerFragment(v : Int) {
         changeDateBg(v-1)
-        replaceFragment(PlanFragment.newInstance("${listViewModel.date.value?.year}-${listViewModel.date.value?.month}-${listViewModel.date.value!!.daysOfWeek[0].second + (v-1)}"))
+        replaceFragment(PlanFragment.newInstance("${listViewModel.date.value?.year}-${listViewModel.date.value?.month}-${listViewModel.date.value!!.daysOfWeek[v-1].second}"))
     }
 
     override fun onDestroy() {

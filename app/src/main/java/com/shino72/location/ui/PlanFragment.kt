@@ -1,5 +1,6 @@
 package com.shino72.location.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,19 +14,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.shino72.location.adapter.PlanRecyclerviewAdapter
 import com.shino72.location.data.Plan
 import com.shino72.location.databinding.FragmentPlanBinding
+import com.shino72.location.utils.DBState
 import com.shino72.location.viewmodel.ListViewModel
 import com.shino72.location.viewmodel.PlanViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PlanFragment : Fragment() {
 
     private var _binding : FragmentPlanBinding? = null
-    private val listViewModel : ListViewModel by viewModels()
     private val planViewModel : PlanViewModel by activityViewModels()
     private val binding get() = _binding!!
 
     private lateinit var adapter : PlanRecyclerviewAdapter
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,28 +36,34 @@ class PlanFragment : Fragment() {
         _binding = FragmentPlanBinding.inflate(inflater, container, false)
         val view = binding.root
 
+
         initPlanRecyclerView()
 
         lifecycleScope.launch{
-            planViewModel.dbEvent.collect {
+            planViewModel.dbEvent.collectLatest {
                 if(it.isLoading) {
                     binding.progress.visibility = View.VISIBLE
                 }
                 if(it.error.isNotBlank()) {
                     binding.progress.visibility = View.GONE
-
                 }
+                val arg = arguments!!.getString(DATE_CODE)!!.split("-")
+                val year = arg[0]
+                val month = arg[1]
+                val day = arg[2]
+
                 val data = mutableListOf<Plan>()
                 it.db?.let {
                     binding.progress.visibility = View.GONE
-                    val dt = it.let {plan ->
+                    it.let {plan ->
                         plan.forEach { p->
-                           data.add(Plan(
-                                name = p.contents,
-                                time = "${p.year}-${p.month}-${p.dayOfMonth}",
-                                location = p.place ?: ""
-                            )
-                           )
+                            if(year == p.year && month == p.month && p.dayOfMonth == day) {
+                                data.add(Plan(
+                                    name = p.contents,
+                                    time = "${p.year}-${p.month}-${p.dayOfMonth}",
+                                    location = p.place ?: ""
+                                ))
+                            }
                         }
                     }
                 }
@@ -62,8 +71,6 @@ class PlanFragment : Fragment() {
                 adapter.notifyDataSetChanged()
             }
         }
-
-
         // Inflate the layout for this fragment
         return view
     }
