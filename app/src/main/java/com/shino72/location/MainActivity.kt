@@ -67,8 +67,10 @@ class MainActivity : AppCompatActivity() {
         init()
 
 
-        // bottom navigation view
         replaceFragment(ListFragment())
+
+        dbViewModel.getDB()
+
         binding.bottomNav.background = null
         binding.bottomNav.setOnItemSelectedListener {
             when(it.itemId) {
@@ -177,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             dbViewModel.insertPlan(
                 Plan(
                     id = 0,
-                    place = dialog.findViewById<TextView>(R.id.result_tv).text.toString(),
+                    place = contents!!.placeName,
                     x = contents!!.x!!,
                     y = contents!!.y!!,
                     contents = editText.text.toString(),
@@ -192,6 +194,8 @@ class MainActivity : AppCompatActivity() {
             // 화면 닫기
             dialog.dismiss()
 
+            // 새롭게 업데이트
+            dbViewModel.getDB()
         }
 
 

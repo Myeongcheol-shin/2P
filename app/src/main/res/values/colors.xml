@@ -10,4 +10,5 @@
     <color name="transparent">#00000000</color>
     <color name="lavender">#DFC5FE</color>
     <color name="purple">#48428f</color>
+    <color name="grey">#CC8D8D90</color>
 </resources>

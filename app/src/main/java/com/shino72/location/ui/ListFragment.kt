@@ -6,32 +6,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
+import android.widget.LinearLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.normal.TedPermission
 import com.shino72.location.R
-import com.shino72.location.databinding.ActivityMainBinding
 import com.shino72.location.databinding.FragmentListBinding
 import com.shino72.location.viewmodel.ListViewModel
-import com.shino72.location.viewmodel.LocationViewModel
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private lateinit var planViewModel: PlanViewModel
-    private lateinit var listViewModel: ListViewModel
-
+    private val listViewModel : ListViewModel by viewModels()
     private val binding get() = _binding!!
 
+    private var selectedView = 0
+
+    private lateinit var _innerList : MutableList<LinearLayout>
+    private val innerList get() = _innerList
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -40,12 +35,23 @@ class ListFragment : Fragment() {
     ): View? {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        val view = binding.root
-        planViewModel = ViewModelProvider(this)[PlanViewModel::class.java]
-        listViewModel = ViewModelProvider(this)[ListViewModel::class.java]
 
+        planViewModel = ViewModelProvider(this)[PlanViewModel::class.java]
+
+        replaceFragment(PlanFragment.newInstance("MON"))
+
+        _innerList = mutableListOf(
+            binding.innerLl1,
+            binding.innerLl2,
+            binding.innerLl3,
+            binding.innerLl4,
+            binding.innerLl5,
+            binding.innerLl6,
+            binding.innerLl7,
+        )
 
         listViewModel.date.observe(requireActivity()) {
+            changeDateBg(it.today)
             binding.date.text = "${it.year}년 ${it.month}월"
             binding.date1Tv.text = it.daysOfWeek[0].second
             binding.date2Tv.text = it.daysOfWeek[1].second
@@ -56,6 +62,8 @@ class ListFragment : Fragment() {
             binding.date7Tv.text = it.daysOfWeek[6].second
         }
 
+        // db 데이터 observing
+        /*
         lifecycle.coroutineScope.launchWhenCreated {
 
             planViewModel.dbEvent.collect {
@@ -70,11 +78,36 @@ class ListFragment : Fragment() {
                 }
             }
         }
+         */
+
+        // linearlayout onClickListener
+        binding.apply {
+            for(i in 0..6){
+                innerList[i].setOnClickListener { changeInnerFragment(i+1) }
+            }
+        }
 
 
 
         // Inflate the layout for this fragment
-        return view
+        return binding.root
+    }
+    private fun replaceFragment(f : Fragment) {
+        val fragmentManager = childFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fr, f)
+        fragmentTransaction.commit()
+    }
+
+    private fun changeDateBg(v : Int) {
+        innerList[selectedView].background = null
+        innerList[v].setBackgroundResource(R.drawable.date_circle_background)
+        selectedView = v
+    }
+
+    private fun changeInnerFragment(v : Int) {
+        changeDateBg(v-1)
+        replaceFragment(PlanFragment.newInstance("${listViewModel.date.value?.year}-${listViewModel.date.value?.month}-${listViewModel.date.value!!.daysOfWeek[0].second + (v-1)}"))
     }
 
     override fun onDestroy() {

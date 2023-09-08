@@ -14,6 +14,21 @@ class ListViewModel : ViewModel() {
     private fun getDate() {
         val calendar = Calendar.getInstance()
 
+        // 현재 요일을 가져옵니다.
+        val today = calendar.get(Calendar.DAY_OF_WEEK)
+
+        // 요일을 문자열로 변환합니다.
+        val dayOfWeekString = when (today) {
+            Calendar.SUNDAY -> 6
+            Calendar.MONDAY -> 0
+            Calendar.TUESDAY -> 1
+            Calendar.WEDNESDAY -> 2
+            Calendar.THURSDAY -> 3
+            Calendar.FRIDAY -> 4
+            Calendar.SATURDAY -> 5
+            else -> 0
+        }
+
         // 년 월 구하기
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
@@ -37,7 +52,9 @@ class ListViewModel : ViewModel() {
         val date = Date(
             year = year,
             month = month,
-            daysOfWeek = daysOfWeek
+            daysOfWeek = daysOfWeek,
+            today = dayOfWeekString
+
         )
 
         _date.value = date
