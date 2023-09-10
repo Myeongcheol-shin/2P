@@ -26,6 +26,7 @@ constructor(
 
     private val _db =  MutableStateFlow<DBEvent>(DBEvent.LoadDB)
 
+
     val dbEvent : StateFlow<DBState> = _dbEvent
 
 
@@ -62,8 +63,11 @@ constructor(
         }
     }
 
-    init {
-        getDB()
+    fun updatePlan(plan:Plan) {
+        viewModelScope.launch(Dispatchers.IO) {
+            planRepository.updatePlan(plan)
+            _db.emit(DBEvent.LoadDB)
+        }
     }
 
 }

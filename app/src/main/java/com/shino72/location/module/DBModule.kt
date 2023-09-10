@@ -27,4 +27,5 @@ class DBModule {
 
     @Provides
     fun providePlanDao(database: PlanDatabase) = database.planDao()
+
 }

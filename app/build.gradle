@@ -65,6 +65,11 @@ android {
 
 dependencies {
 
+    // inputDialog
+    implementation 'com.afollestad.material-dialogs:input:3.3.0'
+    implementation 'com.afollestad.material-dialogs:datetime:3.2.1'
+
+
     // recyclerview
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 

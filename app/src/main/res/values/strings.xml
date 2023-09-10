@@ -3,4 +3,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_key">search</string>
+    <string name="submit">수정</string>
+    <string name="negative">취소</string>
 </resources>

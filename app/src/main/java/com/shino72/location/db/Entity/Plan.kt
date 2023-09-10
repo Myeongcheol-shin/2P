@@ -7,15 +7,14 @@ import androidx.room.PrimaryKey
 data class Plan(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val place : String? = null,
-    val x : String,
-    val y : String,
-    val contents : String,
-    val year : String,
-    val month : String,
-    val dayOfMonth : String,
-    val hour : String,
-    val minute : String,
-
-
-)
+    var place : String? = null,
+    var x : String,
+    var y : String,
+    var contents : String,
+    var year : String,
+    var month : String,
+    var dayOfMonth : String,
+    var hour : String,
+    var minute : String,
+    var status : String = "예정",
+): java.io.Serializable

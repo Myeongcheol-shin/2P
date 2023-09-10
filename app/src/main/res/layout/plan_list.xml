@@ -2,21 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/plan_shape"
     android:padding="10dp"
+    android:backgroundTint="@color/black"
+    android:alpha="0.3"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
+    <TextView
+        android:id="@+id/suc_tv"
+        android:textStyle="bold"
+        android:paddingStart="3dp"
+        android:paddingEnd="3dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:background="@drawable/text_background_stroke"
+        android:text="예정"
+        android:textColor="@color/white"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_gravity="center"
-            android:backgroundTint="@color/grey"
+            android:backgroundTint="@color/white"
             android:background="@drawable/icon_location"
             android:layout_width="15dp"
             android:layout_height="15dp"/>
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/locaiton_tv"
             android:textSize="12sp"
             android:layout_marginLeft="5dp"
@@ -30,11 +45,12 @@
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_gravity="center"
-            android:backgroundTint="@color/grey"
+            android:backgroundTint="@color/white"
             android:background="@drawable/icon_time"
             android:layout_width="15dp"
             android:layout_height="15dp"/>
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/time_tv"
             android:textSize="12sp"
             android:layout_marginLeft="5dp"
@@ -48,11 +64,12 @@
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_gravity="center"
-            android:backgroundTint="@color/grey"
+            android:backgroundTint="@color/white"
             android:background="@drawable/icon_name"
             android:layout_width="15dp"
             android:layout_height="15dp"/>
         <TextView
+            android:textColor="@color/white"
             android:id="@+id/name_tv"
             android:textSize="12sp"
             android:layout_marginLeft="5dp"
@@ -61,13 +78,13 @@
     </LinearLayout>
     <View
         android:layout_marginTop="10dp"
-        android:background="@color/grey"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="2dp"/>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/detail_btn"
         android:textSize="15sp"
-        android:textColor="@color/grey"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:text="자세히보기"
         android:background="@null"

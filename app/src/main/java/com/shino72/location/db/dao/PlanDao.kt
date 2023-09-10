@@ -1,9 +1,6 @@
 package com.shino72.location.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.shino72.location.db.Entity.Plan
 
 @Dao
@@ -17,4 +14,7 @@ interface PlanDao {
 
     @Query("SELECT * FROM plans")
     suspend fun getAllPlans(): List<Plan>
+
+    @Update
+    suspend fun updatePlan(plan:Plan)
 }

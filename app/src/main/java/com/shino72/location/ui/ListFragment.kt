@@ -40,6 +40,7 @@ class ListFragment : Fragment() {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
 
+        
 
         _innerList = mutableListOf(
             binding.innerLl1,
@@ -109,8 +110,15 @@ class ListFragment : Fragment() {
 
     private fun changeDateBg(v : Int) {
         innerList[selectedView].background = null
+        innerList[selectedView].alpha = 1f
         innerList[v].setBackgroundResource(R.drawable.date_circle_background)
+        innerList[v].alpha = 0.3f
         selectedView = v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        planViewModel.getDB()
     }
 
     private fun changeInnerFragment(v : Int) {

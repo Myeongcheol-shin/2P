@@ -28,6 +28,16 @@ class RoomRepository@Inject constructor(private val planDao: PlanDao) {
 
     }
 
+    suspend fun updatePlan(plan:Plan) : Status<Unit> {
+        return try{
+            planDao.updatePlan(plan)
+            Status.Success(Unit)
+        }
+        catch (e : Exception) {
+            Status.Error(e.localizedMessage ?: "")
+        }
+    }
+
     suspend fun deletePlan(plan: Plan) : Status<Unit>{
         return try {
             planDao.deletePlan(plan)

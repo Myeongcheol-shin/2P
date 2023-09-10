@@ -4,4 +4,4 @@ data class Plan(
     val name : String,
     val time : String,
     val location : String,
-)
+) : java.io.Serializable

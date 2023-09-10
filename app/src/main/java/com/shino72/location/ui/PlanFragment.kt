@@ -7,15 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shino72.location.adapter.PlanRecyclerviewAdapter
-import com.shino72.location.data.Plan
 import com.shino72.location.databinding.FragmentPlanBinding
-import com.shino72.location.utils.DBState
-import com.shino72.location.viewmodel.ListViewModel
+import com.shino72.location.db.Entity.Plan
 import com.shino72.location.viewmodel.PlanViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,11 +54,7 @@ class PlanFragment : Fragment() {
                     it.let {plan ->
                         plan.forEach { p->
                             if(year == p.year && month == p.month && p.dayOfMonth == day) {
-                                data.add(Plan(
-                                    name = p.contents,
-                                    time = "${p.year}-${p.month}-${p.dayOfMonth}",
-                                    location = p.place ?: ""
-                                ))
+                                data.add(p)
                             }
                         }
                     }
@@ -76,7 +68,7 @@ class PlanFragment : Fragment() {
     }
 
     private fun initPlanRecyclerView(){
-        adapter = PlanRecyclerviewAdapter()
+        adapter = PlanRecyclerviewAdapter(requireContext())
         binding.rc.adapter=adapter
         binding.rc.layoutManager= LinearLayoutManager(requireContext())
     }

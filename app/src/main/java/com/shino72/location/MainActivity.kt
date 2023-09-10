@@ -251,6 +251,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        dbViewModel.getDB()
     }
 
     private fun openActivityResultLauncher(): ActivityResultLauncher<Intent> {

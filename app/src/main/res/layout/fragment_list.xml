@@ -26,7 +26,6 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:paddingBottom="5dp"
-            android:background="@drawable/date_circle_background"
             android:id="@+id/inner_ll1"
             android:orientation="vertical"
             android:layout_weight="1"
