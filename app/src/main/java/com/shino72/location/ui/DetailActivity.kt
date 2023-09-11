@@ -1,9 +1,15 @@
 package com.shino72.location.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.afollestad.date.dayOfMonth
@@ -12,11 +18,15 @@ import com.afollestad.date.year
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.afollestad.materialdialogs.input.input
+import com.shino72.location.MainActivity
 import com.shino72.location.R
+import com.shino72.location.data.Location
 import com.shino72.location.databinding.ActivityDetailBinding
 import com.shino72.location.db.Entity.Plan
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import net.daum.mf.map.api.MapPOIItem
+import net.daum.mf.map.api.MapPoint
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -24,6 +34,7 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding : ActivityDetailBinding
     private val planViewModel : PlanViewModel by viewModels()
     private lateinit var receiveData : Plan
+    private lateinit var activityResultLauncher : ActivityResultLauncher<Intent>
 
     @SuppressLint("CheckResult", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,14 +56,42 @@ class DetailActivity : AppCompatActivity() {
             supportActionBar?.setHomeAsUpIndicator(R.drawable.icon_backbtn)
         }
 
-        // 시간 수정
-        binding.timeBtn.setOnClickListener {
-
+        // 완료하기 버튼
+        binding.sucBtn.setOnClickListener {
+            val intent = Intent(applicationContext, CheckActivity::class.java)
+            intent.putExtra("detail",receiveData)
+            startActivity(intent)
         }
+
+        // 장소의 결과로 받아온 데이터 처리
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ActivityResultCallback {
+            if(it.resultCode == 9001) {
+                val intent = it.data
+                val contents = intent?.let {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(getString(R.string.search_key), Location::class.java)
+                    } else {
+                        intent.getParcelableExtra<Location>(getString(R.string.search_key))
+                    }
+                }
+                if(contents!!.status)
+                {
+                    receiveData.let {plan ->
+                        plan.x = contents.x.toString()
+                        plan.y = contents.y.toString()
+                        plan.place = contents.placeName
+                    }
+                    planViewModel.updatePlan(receiveData)
+
+                    binding.placeTv.text = contents.placeName
+                }
+            }})
 
         // 장소 수정
         binding.placeBtn.setOnClickListener {
-
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.putExtra(getString(R.string.search_key), "")
+            activityResultLauncher.launch(intent)
         }
 
 
@@ -95,6 +134,22 @@ class DetailActivity : AppCompatActivity() {
                 negativeButton(R.string.negative)
             }
         }
+
+        // 삭제 버튼
+        binding.deleteBtn.setOnClickListener {
+            MaterialDialog(this).show {
+                title(text = "삭제하기")
+                message(text = "정말로 삭제하시겠습니까?")
+                positiveButton(text = "삭제"){
+                    planViewModel.deletePlan(receiveData)
+                    finish()
+                }
+                negativeButton(text = "취소")
+            }
+
+        }
+
+
     }
 
     private fun getMinutes(m : String) : String = if(m.length == 1) "0$m" else m

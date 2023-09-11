@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,9 +60,9 @@ class PlanFragment : Fragment() {
                             }
                         }
                     }
+                    adapter.dataList = data
+                    adapter.notifyDataSetChanged()
                 }
-                adapter.dataList = data
-                adapter.notifyDataSetChanged()
             }
         }
         // Inflate the layout for this fragment
@@ -88,6 +90,16 @@ class PlanFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshFragment(this, fragmentManager!!)
+    }
+
+    private fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager) {
+        val ft: FragmentTransaction = fragmentManager.beginTransaction()
+        ft.detach(fragment).attach(fragment).commit()
     }
 
 }

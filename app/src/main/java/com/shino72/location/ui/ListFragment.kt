@@ -2,13 +2,11 @@ package com.shino72.location.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import com.shino72.location.R
@@ -92,7 +90,7 @@ class ListFragment : Fragment() {
         // linearlayout onClickListener
         binding.apply {
             for(i in 0..6){
-                innerList[i].setOnClickListener { changeInnerFragment(i+1) }
+                innerList[i].setOnClickListener { changeInnerFragment(i) }
             }
         }
 
@@ -116,14 +114,9 @@ class ListFragment : Fragment() {
         selectedView = v
     }
 
-    override fun onResume() {
-        super.onResume()
-        planViewModel.getDB()
-    }
-
     private fun changeInnerFragment(v : Int) {
-        changeDateBg(v-1)
-        replaceFragment(PlanFragment.newInstance("${listViewModel.date.value?.year}-${listViewModel.date.value?.month}-${listViewModel.date.value!!.daysOfWeek[v-1].second}"))
+        changeDateBg(v)
+        replaceFragment(PlanFragment.newInstance("${listViewModel.date.value?.year}-${listViewModel.date.value?.month}-${listViewModel.date.value!!.daysOfWeek[v].second}"))
     }
 
     override fun onDestroy() {

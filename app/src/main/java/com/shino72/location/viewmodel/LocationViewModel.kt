@@ -1,5 +1,7 @@
 package com.shino72.location.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shino72.location.repository.LocationRepository
@@ -38,4 +40,24 @@ constructor(
             }
         }.launchIn(viewModelScope)
     }
+
+    private val _distance = MutableLiveData<Double>()
+    val distance : LiveData<Double> = _distance
+
+    fun distanceInKilometerByHaversine(x1: Double, y1: Double, x2: Double, y2: Double) {
+        val distance: Double
+        val radius = 6371.0 // 지구 반지름(km)
+        val toRadian = Math.PI / 180
+        val deltaLatitude = Math.abs(x1 - x2) * toRadian
+        val deltaLongitude = Math.abs(y1 - y2) * toRadian
+        val sinDeltaLat = Math.sin(deltaLatitude / 2)
+        val sinDeltaLng = Math.sin(deltaLongitude / 2)
+        val squareRoot = Math.sqrt(
+            sinDeltaLat * sinDeltaLat +
+                    Math.cos(x1 * toRadian) * Math.cos(x2 * toRadian) * sinDeltaLng * sinDeltaLng
+        )
+        distance = 2 * radius * Math.asin(squareRoot)
+        _distance.value = distance
+    }
+
 }
