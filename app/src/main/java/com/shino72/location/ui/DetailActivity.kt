@@ -2,11 +2,15 @@ package com.shino72.location.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +31,8 @@ import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -49,6 +55,18 @@ class DetailActivity : AppCompatActivity() {
         binding.statusTv.text = receiveData.status
         binding.timeTv.text = "${receiveData.hour}:${getMinutes(receiveData.minute)}"
 
+        if(receiveData.status == "완료") {
+            binding.sucBtn.visibility = View.GONE
+            binding.statusTv.background = resources.getDrawable(R.drawable.text_background_stroke_red)
+            binding.statusTv.setTextColor(resources.getColor(R.color.red))
+
+            //수정 버튼 숨기기
+            binding.contentBtn.visibility = View.GONE
+            binding.placeBtn.visibility = View.GONE
+            binding.timeBtn.visibility = View.GONE
+        }
+
+
         binding.toolBar.let {
             setSupportActionBar(it)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -57,9 +75,15 @@ class DetailActivity : AppCompatActivity() {
 
         // 완료하기 버튼
         binding.sucBtn.setOnClickListener {
-            val intent = Intent(applicationContext, CheckActivity::class.java)
-            intent.putExtra("detail",receiveData)
-            startActivity(intent)
+            // 현재 시간과 분이 +- 30분 사이가 아니면 완료가 불가능하도록 설정
+            if(isWithin30Minutes(receiveData)) {
+                val intent = Intent(applicationContext, CheckActivity::class.java)
+                intent.putExtra("detail",receiveData)
+                startActivity(intent)
+            }
+            else {
+                Toast.makeText(this, "±30분 범위 밖이기에 완료할 수 없습니다.",Toast.LENGTH_SHORT).show()
+            }
         }
 
         // 장소의 결과로 받아온 데이터 처리
@@ -149,6 +173,18 @@ class DetailActivity : AppCompatActivity() {
         }
 
 
+    }
+
+
+    private fun isWithin30Minutes(date : Plan): Boolean {
+        // 시간 가져오기.
+        val currentDateTime = LocalDateTime.now()
+        // 주어진 년, 월, 일, 시간, 분으로 LocalDateTime 생성.
+        val targetDateTime = LocalDateTime.of(date.year.toInt(), date.month.toInt(), date.dayOfMonth.toInt(), date.hour.toInt(), date.minute.toInt())
+        // 현재 시간과 주어진 시간 간의 분 차이 계산
+        val minutesDifference = ChronoUnit.MINUTES.between(currentDateTime, targetDateTime)
+        // 시간 차이가 +-30분 사이에 있는지 확인
+        return minutesDifference in -30..30
     }
 
     private fun getMinutes(m : String) : String = if(m.length == 1) "0$m" else m

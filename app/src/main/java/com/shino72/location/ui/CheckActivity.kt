@@ -50,6 +50,7 @@ class CheckActivity : AppCompatActivity() {
             }
         }
 
+
         lifecycle.coroutineScope.launchWhenCreated {
             locationViewModel.location.collect {
                 if(it.isLoading) {

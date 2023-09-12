@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.shino72.location.R
 import com.shino72.location.databinding.PlanListBinding
 import com.shino72.location.db.Entity.Plan
 import com.shino72.location.ui.DetailActivity
@@ -26,6 +27,12 @@ class PlanRecyclerviewAdapter(val context : Context) : RecyclerView.Adapter<Plan
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("detail",plan)
                 context.startActivity(intent)
+            }
+
+            if(plan.status == "완료") {
+                binding.sucTv.text = "완료"
+                binding.sucTv.background = context.resources.getDrawable(R.drawable.text_background_stroke_red)
+                binding.sucTv.setTextColor(context.resources.getColor(R.color.red))
             }
         }
 
