@@ -3,6 +3,7 @@ package com.shino72.location.ui
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -118,6 +119,17 @@ class CheckActivity : AppCompatActivity() {
                 }
             }).setDeniedMessage("위치 권한을 허용해주세요.").setPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION).check()
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home  -> {
+                finish()
+                return true
+            }
+            else -> {}
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     companion object {
         val df : DecimalFormat = DecimalFormat("#.####")

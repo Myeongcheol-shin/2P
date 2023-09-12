@@ -36,6 +36,7 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
+
         binding.lineLv.setOnItemClickListener { parent, view, position, id ->
             val finish_intent = Intent(this, MainActivity::class.java)
             finish_intent.putExtra(getString(R.string.search_key), Location(true, placeData!![position].place_name,placeData!![position].x, placeData!![position].y))

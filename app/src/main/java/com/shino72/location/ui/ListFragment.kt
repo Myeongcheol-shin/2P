@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.*
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
 import com.shino72.location.R
 import com.shino72.location.databinding.FragmentListBinding
 import com.shino72.location.viewmodel.ListViewModel
@@ -38,7 +36,15 @@ class ListFragment : Fragment() {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
 
-        
+
+        val currentDate = Date()
+
+        // SimpleDateFormat을 사용하여 원하는 형식으로 포맷팅
+        val dateFormat = SimpleDateFormat("yyyy-M-d", Locale.getDefault())
+        val formattedDate = dateFormat.format(currentDate)
+
+        // 현재 날짜로 데이터 설정
+        replaceFragment(PlanFragment.newInstance(formattedDate))
 
         _innerList = mutableListOf(
             binding.innerLl1,

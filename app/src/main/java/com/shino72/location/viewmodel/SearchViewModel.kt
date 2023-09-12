@@ -20,7 +20,6 @@ constructor(private val kakaorespository : KakaoRepository) : ViewModel() {
     val place : LiveData<Status<Response>> = _place
 
     fun getPlace(places : String) {
-        _place.value = null
         viewModelScope.launch {
             _place.value = Status.Loading()
             val response = kakaorespository.getPlace(places)
