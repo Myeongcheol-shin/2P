@@ -52,21 +52,18 @@ constructor(
     fun insertPlan(plan: Plan) {
         viewModelScope.launch(Dispatchers.IO) {
             planRepository.insertPlan(plan)
-            _db.emit(DBEvent.LoadDB)
         }
     }
 
     fun deletePlan(plan: Plan) {
         viewModelScope.launch(Dispatchers.IO) {
             planRepository.deletePlan(plan)
-            _db.emit(DBEvent.LoadDB)
         }
     }
 
     fun updatePlan(plan:Plan) {
         viewModelScope.launch(Dispatchers.IO) {
             planRepository.updatePlan(plan)
-            _db.emit(DBEvent.LoadDB)
         }
     }
 

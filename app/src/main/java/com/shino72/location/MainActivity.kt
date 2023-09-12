@@ -1,5 +1,6 @@
 package com.shino72.location
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
@@ -11,7 +12,6 @@ import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.ViewGroup
-import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.DatePicker
 import android.widget.ImageView
@@ -29,18 +29,22 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.github.nikartm.button.FitButton
+import com.google.android.gms.common.api.internal.LifecycleCallback.getFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.shino72.location.data.Location
+import com.shino72.location.data.MainPageType
 import com.shino72.location.databinding.ActivityMainBinding
 import com.shino72.location.db.Entity.Plan
 import com.shino72.location.ui.CalendarFragment
 import com.shino72.location.ui.ListFragment
+import com.shino72.location.ui.PlanFragment
 import com.shino72.location.ui.SearchActivity
+import com.shino72.location.viewmodel.MainViewModel
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import net.daum.mf.map.api.MapCircle
+import kotlinx.coroutines.Dispatchers.Main
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -53,43 +57,41 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
     private var _binding: ActivityMainBinding? = null
     private val dbViewModel : PlanViewModel by viewModels()
+    private val mainViewModel : MainViewModel by viewModels()
     private lateinit var dialog: Dialog
     private val binding get() = _binding!!
     private var contents : Location? = null
+
+    // fragment
+
+    @SuppressLint("CommitTransaction")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         dialog = Dialog(this)
         setBottomDialog()
 
-        _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
         init()
 
-
-        replaceFragment(ListFragment())
-
-        dbViewModel.getDB()
-
         binding.bottomNav.background = null
+
+        mainViewModel.currentPageType.observe(this){
+            changeFragment(it)
+        }
         binding.bottomNav.setOnItemSelectedListener {
-            when(it.itemId) {
-                R.id.list -> {
-                    replaceFragment(ListFragment())
-                }
-                R.id.calendar -> {
-                    replaceFragment(CalendarFragment())
-                }
-            }
-            true
+            mainViewModel.setCurrentPage(it.itemId)
         }
 
+        dbViewModel.getDB()
 
         binding.fab.setOnClickListener {
             showDialog()
         }
     }
 
+    @SuppressLint("CommitTransaction")
     private fun setBottomDialog() {
         dialog.setContentView(R.layout.bottom_sheet_layout)
 
@@ -196,6 +198,8 @@ class MainActivity : AppCompatActivity() {
 
             // 새롭게 업데이트
             dbViewModel.getDB()
+
+
         }
 
 
@@ -273,25 +277,37 @@ class MainActivity : AppCompatActivity() {
         }
         return resultLauncher
     }
+    private fun changeFragment(pageType: MainPageType) {
+        val transaction = supportFragmentManager.beginTransaction()
+        var targetFragment = supportFragmentManager.findFragmentByTag(pageType.tag)
 
-    private fun replaceFragment(f : Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fl, f)
-        fragmentTransaction.commit()
-    }
-    private fun requestPermission(logic : () -> Unit) {
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-                override fun onPermissionGranted() {
-                    logic()
+        if (targetFragment == null) {
+            targetFragment = getFragment(pageType)
+            transaction.add(R.id.fl, targetFragment, pageType.tag)
+        }
+        transaction.show(targetFragment)
+        MainPageType.values()
+            .filterNot { it == pageType }
+            .forEach { type ->
+                supportFragmentManager.findFragmentByTag(type.tag)?.let {
+                    transaction.hide(it)
                 }
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(this@MainActivity, "권한을 허가해주세요", Toast.LENGTH_SHORT).show()
-                }
-            }).setDeniedMessage("위치 권한을 허용해주세요.").setPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION).check()
+            }
+        transaction.commitAllowingStateLoss()
     }
+
+    private fun getFragment(pageType: MainPageType): Fragment {
+        var fragment : Fragment = ListFragment()
+        when (pageType.title)
+        {
+            "list" -> fragment = ListFragment()
+            "calendar" -> fragment = CalendarFragment()
+        }
+        return fragment
+    }
+
     companion object {
         const val SEARCH_CODE = 9001
     }
+
 }

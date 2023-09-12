@@ -43,12 +43,11 @@ class DetailActivity : AppCompatActivity() {
 
         // 데이터 받기
         receiveData = intent.getSerializableExtra("detail") as Plan
-        if(receiveData != null) {
-            binding.dateTv.text = "${receiveData.month}월 ${receiveData.dayOfMonth}일 일정"
-            binding.contentsTv.text = receiveData.contents
-            binding.placeTv.text =receiveData.place
-            binding.timeTv.text = "${receiveData.hour}:${getMinutes(receiveData.minute)}"
-        }
+        binding.dateTv.text = "${receiveData.month}월 ${receiveData.dayOfMonth}일 일정"
+        binding.contentsTv.text = receiveData.contents
+        binding.placeTv.text =receiveData.place
+        binding.statusTv.text = receiveData.status
+        binding.timeTv.text = "${receiveData.hour}:${getMinutes(receiveData.minute)}"
 
         binding.toolBar.let {
             setSupportActionBar(it)

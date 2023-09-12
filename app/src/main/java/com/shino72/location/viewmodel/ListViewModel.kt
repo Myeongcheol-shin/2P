@@ -11,6 +11,8 @@ class ListViewModel : ViewModel() {
     private val _date = MutableLiveData<Date>()
     val date : LiveData<Date> = _date
 
+    var currentDate = 0
+
     private fun getDate() {
         val calendar = Calendar.getInstance()
 

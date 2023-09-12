@@ -25,7 +25,7 @@ class ListFragment : Fragment() {
     private val listViewModel : ListViewModel by viewModels()
     private val binding get() = _binding!!
 
-    private var selectedView = 0
+
 
     private lateinit var _innerList : MutableList<LinearLayout>
     private val innerList get() = _innerList
@@ -50,14 +50,6 @@ class ListFragment : Fragment() {
             binding.innerLl7,
         )
 
-        val currentDate = Date()
-
-        // SimpleDateFormat을 사용하여 원하는 형식으로 포맷팅
-        val dateFormat = SimpleDateFormat("yyyy-M-d", Locale.getDefault())
-        val formattedDate = dateFormat.format(currentDate)
-
-
-
         listViewModel.date.observe(requireActivity()) {
             changeDateBg(it.today)
             binding.date.text = "${it.year}년 ${it.month}월"
@@ -70,35 +62,16 @@ class ListFragment : Fragment() {
             binding.date7Tv.text = it.daysOfWeek[6].second
         }
 
-
-        lifecycle.coroutineScope.launchWhenCreated {
-
-            planViewModel.dbEvent.collect {
-                if(it.isLoading) {
-
-                }
-                if(it.error.isNotBlank()) {
-
-                }
-                it.db?.let {
-                    replaceFragment(PlanFragment.newInstance(formattedDate))
-                }
-            }
-        }
-
-
         // linearlayout onClickListener
         binding.apply {
             for(i in 0..6){
                 innerList[i].setOnClickListener { changeInnerFragment(i) }
             }
         }
-
-
-
         // Inflate the layout for this fragment
         return binding.root
     }
+
     private fun replaceFragment(f : Fragment) {
         val fragmentManager = childFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -107,11 +80,11 @@ class ListFragment : Fragment() {
     }
 
     private fun changeDateBg(v : Int) {
-        innerList[selectedView].background = null
-        innerList[selectedView].alpha = 1f
+        innerList[listViewModel.currentDate].background = null
+        innerList[listViewModel.currentDate].alpha = 1f
         innerList[v].setBackgroundResource(R.drawable.date_circle_background)
         innerList[v].alpha = 0.3f
-        selectedView = v
+        listViewModel.currentDate = v
     }
 
     private fun changeInnerFragment(v : Int) {
@@ -122,5 +95,13 @@ class ListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+    override fun onResume() {
+        super.onResume()
+        planViewModel.getDB()
+    }
+    private fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager) {
+        val ft: FragmentTransaction = fragmentManager.beginTransaction()
+        ft.detach(fragment).attach(fragment).commit()
     }
 }

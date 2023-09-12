@@ -21,6 +21,7 @@ class PlanRecyclerviewAdapter(val context : Context) : RecyclerView.Adapter<Plan
             binding.locaitonTv.text= plan.place
             binding.timeTv.text= "${plan.year}-${plan.month}-${plan.dayOfMonth} / ${plan.hour}:${getMinutes(plan.minute)}"
             binding.nameTv.text= plan.contents
+            binding.sucTv.text = plan.status
             binding.detailBtn.setOnClickListener {
                 val intent = Intent(context, DetailActivity::class.java)
                 intent.putExtra("detail",plan)

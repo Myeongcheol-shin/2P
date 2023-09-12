@@ -32,6 +32,7 @@ class PlanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlanBinding.inflate(inflater, container, false)
+
         val view = binding.root
 
 
@@ -62,6 +63,7 @@ class PlanFragment : Fragment() {
                     }
                     adapter.dataList = data
                     adapter.notifyDataSetChanged()
+
                 }
             }
         }
@@ -69,11 +71,13 @@ class PlanFragment : Fragment() {
         return view
     }
 
+
     private fun initPlanRecyclerView(){
         adapter = PlanRecyclerviewAdapter(requireContext())
         binding.rc.adapter=adapter
         binding.rc.layoutManager= LinearLayoutManager(requireContext())
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -92,14 +96,5 @@ class PlanFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        refreshFragment(this, fragmentManager!!)
-    }
-
-    private fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager) {
-        val ft: FragmentTransaction = fragmentManager.beginTransaction()
-        ft.detach(fragment).attach(fragment).commit()
-    }
 
 }
