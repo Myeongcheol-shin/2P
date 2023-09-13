@@ -47,4 +47,22 @@ class RoomRepository@Inject constructor(private val planDao: PlanDao) {
             Status.Error(e.localizedMessage ?: "")
         }
     }
+
+    suspend fun getFinishedPlans() : Flow<Status<List<Plan>>> = flow {
+        try {
+            val plans = planDao.getFinishedPlan()
+            emit(Status.Success(plans))
+        } catch (e: Exception) {
+            emit(Status.Error(e.localizedMessage ?: ""))
+        }
+    }
+
+    suspend fun getNotCompletedPlans() : Flow<Status<List<Plan>>> = flow {
+        try {
+            val plans = planDao.getNotCompletedPlan()
+            emit(Status.Success(plans))
+        } catch (e: Exception) {
+            emit(Status.Error(e.localizedMessage ?: ""))
+        }
+    }
 }

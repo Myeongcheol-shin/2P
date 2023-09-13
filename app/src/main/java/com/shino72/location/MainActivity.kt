@@ -37,6 +37,7 @@ import com.shino72.location.db.Entity.Plan
 import com.shino72.location.ui.CalendarFragment
 import com.shino72.location.ui.ListFragment
 import com.shino72.location.ui.SearchActivity
+import com.shino72.location.utils.DateTimeUtils
 import com.shino72.location.viewmodel.MainViewModel
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -185,6 +186,7 @@ class MainActivity : AppCompatActivity() {
                     dayOfMonth = datePicker.dayOfMonth.toString(),
                     hour = timePicker.hour.toString(),
                     minute = timePicker.minute.toString(),
+                    timestamp = DateTimeUtils.dateTimeToMilliseconds(datePicker.year, datePicker.month, datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
                 )
             )
 

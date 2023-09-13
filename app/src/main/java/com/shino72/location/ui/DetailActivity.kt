@@ -27,6 +27,7 @@ import com.shino72.location.R
 import com.shino72.location.data.Location
 import com.shino72.location.databinding.ActivityDetailBinding
 import com.shino72.location.db.Entity.Plan
+import com.shino72.location.utils.DateTimeUtils
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import net.daum.mf.map.api.MapPOIItem
@@ -149,6 +150,9 @@ class DetailActivity : AppCompatActivity() {
 
                         binding.dateTv.text = "${it.month}월 ${it.dayOfMonth}일 일정"
                         binding.timeTv.text = "${it.hour}:${it.minute}"
+
+                        it.timestamp = DateTimeUtils.dateTimeToMilliseconds(datetime.year, datetime.month, datetime.dayOfMonth, datetime.get(Calendar.HOUR_OF_DAY), datetime.get(Calendar.MINUTE))
+
                     }
                     planViewModel.updatePlan(receiveData)
                 }

@@ -17,4 +17,5 @@ data class Plan(
     var hour : String,
     var minute : String,
     var status : String = "예정",
+    var timestamp : Long,
 ): java.io.Serializable
