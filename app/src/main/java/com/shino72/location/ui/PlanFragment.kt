@@ -34,6 +34,19 @@ class PlanFragment : Fragment() {
         _binding = FragmentPlanBinding.inflate(inflater, container, false)
 
         val view = binding.root
+        // Inflate the layout for this fragment
+        return view
+    }
+
+
+    private fun initPlanRecyclerView(){
+        adapter = PlanRecyclerviewAdapter(requireContext())
+        binding.rc.adapter=adapter
+        binding.rc.layoutManager= LinearLayoutManager(requireContext())
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
 
         initPlanRecyclerView()
@@ -67,17 +80,7 @@ class PlanFragment : Fragment() {
                 }
             }
         }
-        // Inflate the layout for this fragment
-        return view
     }
-
-
-    private fun initPlanRecyclerView(){
-        adapter = PlanRecyclerviewAdapter(requireContext())
-        binding.rc.adapter=adapter
-        binding.rc.layoutManager= LinearLayoutManager(requireContext())
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()

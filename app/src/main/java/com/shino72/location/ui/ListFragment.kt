@@ -36,7 +36,12 @@ class ListFragment : Fragment() {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
 
+        // Inflate the layout for this fragment
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val currentDate = Date()
 
         // SimpleDateFormat을 사용하여 원하는 형식으로 포맷팅
@@ -74,10 +79,7 @@ class ListFragment : Fragment() {
                 innerList[i].setOnClickListener { changeInnerFragment(i) }
             }
         }
-        // Inflate the layout for this fragment
-        return binding.root
     }
-
     private fun replaceFragment(f : Fragment) {
         val fragmentManager = childFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()

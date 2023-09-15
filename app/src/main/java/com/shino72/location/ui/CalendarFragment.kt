@@ -35,6 +35,14 @@ class CalendarFragment : Fragment() {
 
         initialX = binding.fab.x
 
+        return binding.root
+
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         // animation set
         moveLeftAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_slide_left)
         moveRightAnim = TranslateAnimation(0f, initialX - binding.fab.x, 0f,0f)
@@ -50,7 +58,7 @@ class CalendarFragment : Fragment() {
             }
             override fun onAnimationRepeat(animation: Animation?) {
             }
-            }
+        }
         )
 
         fadeIn.setAnimationListener( object : Animation.AnimationListener {
@@ -64,15 +72,6 @@ class CalendarFragment : Fragment() {
             }
         }
         )
-
-
-        return binding.root
-
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
 
         // 눌렀을 때 fab 애니메이션
