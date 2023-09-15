@@ -23,8 +23,6 @@ class ListFragment : Fragment() {
     private val listViewModel : ListViewModel by viewModels()
     private val binding get() = _binding!!
 
-
-
     private lateinit var _innerList : MutableList<LinearLayout>
     private val innerList get() = _innerList
 
@@ -107,9 +105,5 @@ class ListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         planViewModel.getDB()
-    }
-    private fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager) {
-        val ft: FragmentTransaction = fragmentManager.beginTransaction()
-        ft.detach(fragment).attach(fragment).commit()
     }
 }

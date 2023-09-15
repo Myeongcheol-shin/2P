@@ -9,6 +9,6 @@
         />
     <item
         android:id="@+id/calendar"
-        android:title="달력"
+        android:title="플랜"
         android:icon="@drawable/icon_calendar"/>
 </menu>

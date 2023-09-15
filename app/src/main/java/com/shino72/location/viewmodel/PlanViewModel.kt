@@ -24,10 +24,9 @@ constructor(
 ) : ViewModel() {
     private var _dbEvent = MutableStateFlow(DBState())
 
-    private val _db =  MutableStateFlow<DBEvent>(DBEvent.LoadDB)
-
-
     val dbEvent : StateFlow<DBState> = _dbEvent
+
+    private val _db =  MutableStateFlow<DBEvent>(DBEvent.LoadDB)
 
 
     fun getDB() {
@@ -47,7 +46,6 @@ constructor(
             }
         }.launchIn(viewModelScope)
     }
-
 
     fun insertPlan(plan: Plan) {
         viewModelScope.launch(Dispatchers.IO) {

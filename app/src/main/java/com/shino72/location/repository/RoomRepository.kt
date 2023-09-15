@@ -48,7 +48,7 @@ class RoomRepository@Inject constructor(private val planDao: PlanDao) {
         }
     }
 
-    suspend fun getFinishedPlans() : Flow<Status<List<Plan>>> = flow {
+    fun getFinishedPlans() : Flow<Status<List<Plan>>> = flow {
         try {
             val plans = planDao.getFinishedPlan()
             emit(Status.Success(plans))
@@ -57,7 +57,7 @@ class RoomRepository@Inject constructor(private val planDao: PlanDao) {
         }
     }
 
-    suspend fun getNotCompletedPlans() : Flow<Status<List<Plan>>> = flow {
+    fun getNotCompletedPlans() : Flow<Status<List<Plan>>> = flow {
         try {
             val plans = planDao.getNotCompletedPlan()
             emit(Status.Success(plans))
