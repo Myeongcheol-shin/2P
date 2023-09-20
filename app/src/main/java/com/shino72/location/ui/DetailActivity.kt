@@ -1,6 +1,8 @@
 package com.shino72.location.ui
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -27,6 +29,7 @@ import com.shino72.location.R
 import com.shino72.location.data.Location
 import com.shino72.location.databinding.ActivityDetailBinding
 import com.shino72.location.db.Entity.Plan
+import com.shino72.location.receiver.AlarmReceiver
 import com.shino72.location.utils.DateTimeUtils
 import com.shino72.location.viewmodel.PlanViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -151,7 +154,7 @@ class DetailActivity : AppCompatActivity() {
                         binding.dateTv.text = "${it.month}월 ${it.dayOfMonth}일 일정"
                         binding.timeTv.text = "${it.hour}:${it.minute}"
 
-                        it.timestamp = DateTimeUtils.dateTimeToMilliseconds(datetime.year, datetime.month, datetime.dayOfMonth, datetime.get(Calendar.HOUR_OF_DAY), datetime.get(Calendar.MINUTE))
+                        it.timestamp = DateTimeUtils.dateTimeToMilliseconds(datetime.year, (datetime.month + 1), datetime.dayOfMonth, datetime.get(Calendar.HOUR_OF_DAY), datetime.get(Calendar.MINUTE))
 
                     }
                     planViewModel.updatePlan(receiveData)
@@ -168,6 +171,15 @@ class DetailActivity : AppCompatActivity() {
                 title(text = "삭제하기")
                 message(text = "정말로 삭제하시겠습니까?")
                 positiveButton(text = "삭제"){
+                    // 알람 해제
+                    val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                    val intent = Intent(applicationContext, AlarmReceiver::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        applicationContext, receiveData.timestamp.toInt(), intent, PendingIntent.FLAG_IMMUTABLE
+                    )
+                    alarmManager.cancel(pendingIntent)
+
+                    // db에서 삭제
                     planViewModel.deletePlan(receiveData)
                     finish()
                 }

@@ -65,4 +65,20 @@ class RoomRepository@Inject constructor(private val planDao: PlanDao) {
             emit(Status.Error(e.localizedMessage ?: ""))
         }
     }
+
+    fun getPlansAfterTimestamp(timestamp:Long) : Flow<Status<List<Plan>>> = flow {
+        try {
+            val plans = planDao.getPlansAfterTimestamp(timestamp)
+            emit(Status.Success(plans))
+        }catch (e:Exception) {
+            emit(Status.Error(e.localizedMessage ?: ""))
+        }
+    }
+    /*
+     fun getPlansAfterTimestamp(timestamp:Long) : List<Plan>? {
+        try {
+            return planDao.getPlansAfterTimestamp(timestamp)
+        }catch (_:Exception) { return null }
+    }
+     */
 }

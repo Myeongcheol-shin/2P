@@ -2,12 +2,16 @@ package com.shino72.location
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
@@ -24,16 +28,20 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.github.nikartm.button.FitButton
 import com.google.android.material.textfield.TextInputEditText
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.shino72.location.data.Location
 import com.shino72.location.data.MainPageType
 import com.shino72.location.databinding.ActivityMainBinding
 import com.shino72.location.db.Entity.Plan
+import com.shino72.location.receiver.AlarmReceiver
 import com.shino72.location.ui.CalendarFragment
 import com.shino72.location.ui.ListFragment
 import com.shino72.location.ui.SearchActivity
@@ -64,6 +72,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 알람 권한  체크 (티라미수 이상이면 알람 권한 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermission()
+        }
+        // 오버레이 권한
+        if (!Settings.canDrawOverlays(this)){
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${packageName}"))
+            startActivity(intent)
+        }
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         dialog = Dialog(this)
@@ -172,22 +189,38 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "장소를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            val timestamp = dateTimeToMilliseconds(datePicker.year, datePicker.month, datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
+
+            val plan = Plan(
+                id = 0,
+                place = contents!!.placeName,
+                x = contents!!.x!!,
+                y = contents!!.y!!,
+                contents = editText.text.toString(),
+                year = datePicker.year.toString(),
+                month = (datePicker.month + 1).toString(),
+                dayOfMonth = datePicker.dayOfMonth.toString(),
+                hour = timePicker.hour.toString(),
+                minute = timePicker.minute.toString(),
+                timestamp = timestamp
+            )
+
+            // 알람 추가
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, AlarmReceiver::class.java)
+            intent.putExtra("detail",plan)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this, timestamp.toInt() , intent, PendingIntent.FLAG_IMMUTABLE)
+
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                timestamp,
+                pendingIntent
+            )
 
             // db에 추가
             dbViewModel.insertPlan(
-                Plan(
-                    id = 0,
-                    place = contents!!.placeName,
-                    x = contents!!.x!!,
-                    y = contents!!.y!!,
-                    contents = editText.text.toString(),
-                    year = datePicker.year.toString(),
-                    month = (datePicker.month + 1).toString(),
-                    dayOfMonth = datePicker.dayOfMonth.toString(),
-                    hour = timePicker.hour.toString(),
-                    minute = timePicker.minute.toString(),
-                    timestamp = DateTimeUtils.dateTimeToMilliseconds(datePicker.year, datePicker.month, datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
-                )
+                plan
             )
 
             // 화면 닫기
@@ -206,6 +239,12 @@ class MainActivity : AppCompatActivity() {
         dialog.window?.setGravity(Gravity.BOTTOM)
 
     }
+    private fun dateTimeToMilliseconds(year: Int, month: Int, day: Int, hour: Int, minute: Int): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day, hour, minute, 0)
+        return calendar.timeInMillis
+    }
+
     private fun showDialog() {
         try {
             mapView = MapView(this)
@@ -254,6 +293,20 @@ class MainActivity : AppCompatActivity() {
         })
 
         dbViewModel.getDB()
+    }
+
+    // 권한 체크
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestPermission() {
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+                override fun onPermissionGranted() {
+                }
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(applicationContext, "알람 요청을 위해 권한을 허용해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }).setDeniedMessage("알람 권한을 허용해주세요.").setPermissions(android.Manifest.permission.POST_NOTIFICATIONS, android.Manifest.permission.SYSTEM_ALERT_WINDOW
+            ).check()
     }
 
     private fun openActivityResultLauncher(): ActivityResultLauncher<Intent> {
