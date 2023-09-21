@@ -4,6 +4,12 @@
   <img src="https://github.com/Myeongcheol-shin/location/assets/82868004/13b76cf1-3be4-4148-a5cb-d9a23f3504f0" height="300" width="300"> 
 </p>
 
+<p align="center">
+	<img src ="https://github.com/Myeongcheol-shin/location/assets/82868004/4deb32d8-1749-41c2-a30b-ca545e619fde" align="center" width="30%"/>
+	<img src="https://github.com/Myeongcheol-shin/location/assets/82868004/1dcdeca7-598f-4787-8983-31f875b446aa" align="center" width="30%"/>
+</p>
+
+
 # 2P?
 `2P`는 `Place Planner`로 장소 기반 플래너입니다.  
 기존 플래너와 달리 해당 장소에 실제로 위치해야만, 계획을 완료시킬 수 있습니다.
