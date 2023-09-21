@@ -1,7 +1,7 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=위치기반플래너&fontSize=90" />
 
 <p align="center"> 
-  <img src="https://github.com/Myeongcheol-shin/location/assets/82868004/9a2f089e-89cb-44e4-92c0-8b27e8dd0a11" height="300" width="300"> 
+  <img src="https://github.com/Myeongcheol-shin/location/assets/82868004/13b76cf1-3be4-4148-a5cb-d9a23f3504f0" height="300" width="300"> 
 </p>
 
 # 2P?
